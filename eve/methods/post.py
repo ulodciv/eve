@@ -198,8 +198,8 @@ def post_internal(resource, payl=None, skip_validation=False):
                     document = validator.document
 
                 # Populate meta and default fields
-                document[config.LAST_UPDATED] = \
-                    document[config.DATE_CREATED] = date_utc
+                # document[config.LAST_UPDATED] = \
+                #     document[config.DATE_CREATED] = date_utc
 
                 if config.DOMAIN[resource]['soft_delete'] is True:
                     document[config.DELETED] = False

@@ -10,7 +10,9 @@
     :license: BSD, see LICENSE for more details.
 """
 import itertools
+import re
 from datetime import datetime
+from uuid import UUID
 
 import ast
 import pymongo
@@ -30,6 +32,11 @@ from eve.io.base import DataLayer, ConnectionException, BaseJSONEncoder
 from eve.io.mongo.parser import parse, ParseError
 from eve.utils import config, debug_error_message, validate_filters, \
     str_to_date, str_type
+
+
+UUID_RE = regex = re.compile(
+    '^[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}$',
+    re.I)
 
 
 class MongoJSONEncoder(BaseJSONEncoder):
@@ -84,6 +91,7 @@ class Mongo(DataLayer):
         'integer': lambda value: int(value) if value is not None else None,
         'float': lambda value: float(value) if value is not None else None,
         'number': lambda val: json.loads(val) if val is not None else None,
+        'uuid': lambda val: UUID(val) if val is not None else None,
         'boolean': lambda v:
         {'1': True, 'true': True, '0': False, 'false': False}[str(v).lower()],
         'dbref': lambda value:
@@ -764,18 +772,15 @@ class Mongo(DataLayer):
             try:
                 return datetime.strptime(v, config.DATE_FORMAT)
             except:
+                if isinstance(v, str) and UUID_RE.match(v):
+                    return UUID(v)
                 if not skip_objectid:
                     try:
                         # Convert to unicode because ObjectId() interprets
                         # 12-character strings (but not unicode) as binary
                         # representations of ObjectId's.  See
                         # https://github.com/pyeve/eve/issues/508
-                        try:
-                            r = ObjectId(unicode(v))
-                        except NameError:
-                            # We're on Python 3 so it's all unicode # already.
-                            r = ObjectId(v)
-                        return r
+                        return ObjectId(v)
                     except:
                         return v
                 else:

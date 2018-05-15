@@ -14,6 +14,8 @@ import math
 
 import copy
 import json
+from uuid import UUID
+
 from flask import current_app as app, abort, request
 from werkzeug import MultiDict
 
@@ -326,6 +328,13 @@ def getitem_internal(resource, **lookup):
         # GET requests should always fetch soft deleted documents from the db
         # They are handled and included in 404 responses below.
         req.show_deleted = True
+
+    #### hack ###
+    if '_id' in lookup:
+        if 'schema' in resource_def and '_id' in resource_def['schema']:
+            if resource_def['schema']['_id'].get('type') == 'uuid':
+                lookup['_id'] = UUID(lookup['_id'])
+    #### end of hack ###
 
     document = app.data.find_one(resource, req, **lookup)
     if not document:

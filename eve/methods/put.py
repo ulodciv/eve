@@ -10,6 +10,7 @@
     :license: BSD, see LICENSE for more details.
 """
 from datetime import datetime
+from uuid import UUID
 
 from flask import current_app as app, abort
 from werkzeug import exceptions
@@ -113,6 +114,13 @@ def put_internal(resource, payload=None, concurrency_check=False,
     if payload is None:
         payload = payload_()
 
+    #### hack ###
+    if '_id' in lookup:
+        if 'schema' in resource_def and '_id' in resource_def['schema']:
+            if resource_def['schema']['_id'].get('type') == 'uuid':
+                lookup['_id'] = UUID(lookup['_id'])
+    #### end of hack ###
+
     # Retrieve the original document without checking user-restricted access,
     # but returning the document owner in the projection. This allows us to
     # prevent PUT if the document exists, but is owned by a different user
@@ -168,8 +176,8 @@ def put_internal(resource, payload=None, concurrency_check=False,
 
             # update meta
             last_modified = datetime.utcnow().replace(microsecond=0)
-            document[config.LAST_UPDATED] = last_modified
-            document[config.DATE_CREATED] = original[config.DATE_CREATED]
+            # document[config.LAST_UPDATED] = last_modified
+            # document[config.DATE_CREATED] = original[config.DATE_CREATED]
             if resource_def['soft_delete'] is True:
                 # PUT with soft delete enabled should always set the DELETED
                 # field to False. We are either carrying through un-deleted

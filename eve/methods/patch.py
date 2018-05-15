@@ -11,6 +11,8 @@
 """
 
 from copy import deepcopy
+from uuid import UUID
+
 from flask import current_app as app, abort
 from werkzeug import exceptions
 from datetime import datetime
@@ -130,13 +132,20 @@ def patch_internal(resource, payload=None, concurrency_check=False,
     """
     if payload is None:
         payload = payload_()
+    resource_def = app.config['DOMAIN'][resource]
+
+    #### hack ###
+    if '_id' in lookup:
+        if 'schema' in resource_def and '_id' in resource_def['schema']:
+            if resource_def['schema']['_id'].get('type') == 'uuid':
+                lookup['_id'] = UUID(lookup['_id'])
+    #### end of hack ###
 
     original = get_document(resource, concurrency_check, **lookup)
     if not original:
         # not found
         abort(404)
 
-    resource_def = app.config['DOMAIN'][resource]
     schema = resource_def['schema']
     validator = app.validator(schema, resource=resource)
 
