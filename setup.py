@@ -19,6 +19,7 @@ INSTALL_REQUIRES = [
     'flask>=1.0',
     'pymongo>=3.5',
     'simplejson>=3.3.0,<4.0',
+    'ujson',
 ]
 
 EXTRAS_REQUIRE = {
@@ -46,8 +47,7 @@ setup(
     url='http://python-eve.org',
     project_urls={
         'Documentation': 'http://python-eve.org',
-        'Code': 'https://github.com/pyeve/eve',
-        'Issue tracker': 'https://github.com/pyeve/eve/issues',
+        'Code': 'https://github.com/ulodciv/eve',
     },
     license='BSD',
     platforms=["any"],

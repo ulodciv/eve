@@ -15,7 +15,7 @@ from copy import copy
 from datetime import datetime
 from functools import wraps
 
-import simplejson as json
+import ujson as json
 from bson.dbref import DBRef
 from bson.errors import InvalidId
 from cerberus import schema_registry, rules_set_registry

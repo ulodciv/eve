@@ -13,7 +13,7 @@
 import math
 
 import copy
-import json
+import ujson
 from uuid import UUID
 
 from flask import current_app as app, abort, request
@@ -152,7 +152,7 @@ def _perform_aggregation(resource, pipeline, options):
     req_pipeline = copy.deepcopy(pipeline)
     if req.aggregation:
         try:
-            query = json.loads(req.aggregation)
+            query = ujson.loads(req.aggregation)
         except ValueError:
             abort(400, description='Aggregation query could not be parsed.')
 

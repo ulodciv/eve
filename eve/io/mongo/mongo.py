@@ -16,7 +16,7 @@ from uuid import UUID
 
 import ast
 import pymongo
-import simplejson as json
+import ujson as json
 from bson import ObjectId
 from bson.dbref import DBRef
 from copy import copy
