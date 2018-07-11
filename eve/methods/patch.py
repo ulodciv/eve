@@ -40,7 +40,7 @@ def patch(resource, payload=None, **lookup):
        Split into patch() and patch_internal().
     """
     return patch_internal(resource, payload, concurrency_check=True,
-                          skip_validation=False, **lookup)
+                          skip_validation=True, **lookup)
 
 
 def patch_internal(resource, payload=None, concurrency_check=False,

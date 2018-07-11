@@ -40,7 +40,7 @@ def put(resource, payload=None, **lookup):
        Split into put() and put_internal().
     """
     return put_internal(resource, payload, concurrency_check=True,
-                        skip_validation=False, **lookup)
+                        skip_validation=True, **lookup)
 
 
 def put_internal(resource, payload=None, concurrency_check=False,
@@ -136,7 +136,7 @@ def put_internal(resource, payload=None, concurrency_check=False,
             if schema[resource_def['id_field']].get('type', '') == 'objectid':
                 id = str(id)
             payload[resource_def['id_field']] = id
-            return post_internal(resource, payl=payload)
+            return post_internal(resource, payl=payload, skip_validation=skip_validation)
         else:
             abort(404)
 

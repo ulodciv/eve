@@ -36,7 +36,7 @@ def post(resource, payl=None):
     .. versionchanged:: 0.5
        Split original post() into post/post_internal combo.
     """
-    return post_internal(resource, payl, skip_validation=False)
+    return post_internal(resource, payl, skip_validation=True)
 
 
 def post_internal(resource, payl=None, skip_validation=False):
