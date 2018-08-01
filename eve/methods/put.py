@@ -109,7 +109,7 @@ def put_internal(resource, payload=None, concurrency_check=False,
     """
     resource_def = app.config['DOMAIN'][resource]
     schema = resource_def['schema']
-    validator = app.validator(schema, resource=resource)
+    validator = None if skip_validation else app.validator(schema, resource=resource)
 
     if payload is None:
         payload = payload_()
